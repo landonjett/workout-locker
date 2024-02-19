@@ -1,3 +1,5 @@
+// models/user.js
+
 'use strict';
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/connection'); // Make sure this path correctly points to your Sequelize connection setup file

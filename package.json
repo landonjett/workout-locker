@@ -23,7 +23,6 @@
     "morgan": "^1.10.0",
     "mysql2": "^3.9.1",
     "sequelize": "^6.37.0",
-    "sequelizer": "^1.1.4",
     "swiper": "^11.0.6"
   },
   "devDependencies": {

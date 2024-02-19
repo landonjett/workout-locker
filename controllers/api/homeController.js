@@ -15,16 +15,6 @@ router.get('/', (req, res) => {
 
 // Route to display the dashboard
 // This route is protected, only accessible to logged-in users
-router.get('/', (req, res) => {
-  if (req.session.loggedIn) {
-    res.redirect('/dashboard');
-    return;
-  }
-  res.render('home', { layout: 'main' });
-});
-
-// Route to display the dashboard
-// This route is protected, only accessible to logged-in users
 router.get('/dashboard', isAuthenticated, async (req, res) => {
   try {
     // Fetch user's workouts from the database
@@ -51,10 +41,3 @@ router.get('/dashboard', isAuthenticated, async (req, res) => {
 
 // Export routes for server.js to use
 module.exports = router;
-
-
-
-
-
-
-
