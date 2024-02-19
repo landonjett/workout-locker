@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Fitness Progress Tracker</title>
+    <!-- Bootstrap CSS CDN for simple styling -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/act-prac/workout-locker/public/assets/css/style.css">
+</head>
+<body>z
+    <!-- Navigation Bar (optional) -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="/">Fitness Tracker</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/act-prac/workout-locker/public/assets/js/dashboard.js">Dashboard</a>
+                </li>
+                {{#if loggedIn}}
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="logout-button">Logout</a>
+                </li>
+                {{else}}
+                <li class="nav-item">
+                    <a class="nav-link" href="/act-prac/workout-locker/public/assets/login.html">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/act-prac/workout-locker/public/assets/signup.html">Sign Up</a>
+                </li>
+                {{/if}}
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        {{{body}}}
+    </div>
+
+    <!-- Bootstrap and jQuery Scripts -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Custom Scripts -->
+    <script src="/assets/js/logout.js"></script>
+
+</body>
+</html>
+    

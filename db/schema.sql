@@ -1,5 +1,7 @@
+-- Drop the database if it exists
 DROP DATABASE IF EXISTS workouts_db;
 
+-- Create the database
 CREATE DATABASE workouts_db;
 
 -- Use the database

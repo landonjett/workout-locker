@@ -11,8 +11,9 @@ class User extends Model {
 User.init(
   {
     name: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING (50),
       allowNull: false,
+      unique: true,
     },
     email: {
       type: DataTypes.STRING,
@@ -28,6 +29,17 @@ User.init(
       validate: {
         len: [8],
       },
+    },
+    created_at: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW, // Ensure default values are in line with your database defaults
+    },
+    updated_at: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+      onUpdate: DataTypes.NOW, // Sequelize handles this automatically if timestamps are true
     },
   },
   {
