@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Fitness Progress Tracker</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css"/>
+    <link rel="stylesheet" href="/assets/css/style.css"> <!-- Adjust the path as needed -->
+</head>
+<body>
+    <div class="container">
+        <!-- Swiper -->
+        <div class="swiper-container">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">Slide 1 Content Here</div>
+                <div class="swiper-slide">Slide 2 Content Here</div>
+                <div class="swiper-slide">Slide 3 Content Here</div>
+                <!-- Additional slides here -->
+            </div>
+            <!-- Add Pagination -->
+            <div class="swiper-pagination"></div>
+            <!-- Add Navigation -->
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+        </div>
+
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-6">
+                <h2 class="text-center">Login</h2>
+                <form id="login-form" class="mt-4">
+                    <div class="form-group">
+                        <label for="email-input">Email</label>
+                        <input type="email" class="form-control" id="email-input" placeholder="Enter email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password-input">Password</label>
+                        <input type="password" class="form-control" id="password-input" placeholder="Password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Log In</button>
+                </form>
+                <div class="text-center mt-3">
+                    <p>Don't have an account? <a href="./signup.html">Sign up</a></p> <!-- Adjust the path as needed -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <script src="./assets/js/login.js"></script> <!-- Adjust the path as needed -->
+    <script>
+        // Initialize Swiper
+        var swiper = new Swiper('.swiper-container', {
+          slidesPerView: 1,
+          spaceBetween: 30,
+          loop: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+    </script>
+</body>
+</html>
