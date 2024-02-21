@@ -1,43 +1,27 @@
-{{!-- Assuming main.layout includes your header, navbar, and footer --}}
-{{!-- This is the main content area for the user's dashboard --}}
-<h1 class="mt-4 mb-4">Your Dashboard</h1>
+{{!-- Include main layout --}}
+{{!-- {{> main}} --}}
 
-{{!-- Optional: Display the user's name or username if available --}}
-{{#if user.username}}
-    <h2>Welcome back, {{user.username}}!</h2>
-{{/if}}
+{{!-- Main content --}}
+<div class="container">
+    <h1 class="mt-4 mb-4">Your Dashboard</h1>
 
-{{!-- Section for displaying workout details --}}
-<div id="workouts-container"></div> <!-- Container for dynamically loaded workouts -->
+    {{!-- Optional: Display the user's name or username if available --}}
+    {{#if user.username}}
+        <h2>Welcome back, {{user.username}}!</h2>
+    {{/if}}
 
-{{!-- Button to add a new workout --}}
-<button id="add-workout-btn" class="btn btn-primary mt-3">Add New Workout</button>
+    {{!-- Section for displaying workout details --}}
+    <div id="workouts-container"></div> <!-- Container for dynamically loaded workouts -->
 
-{{!-- Form for adding a new workout --}}
-<div id="workout-form" style="display:none;">
-    <form>
-        <div>
-            <label for="name-input">Workout Name:</label>
-            <input type="text" id="name-input" name="name" required>
-        </div>
-        <div>
-            <label for="type-input">Workout Type:</label>
-            <select id="type-input" name="type" required>
-                <option value="cardio">Cardio</option>
-                <option value="strength training">Strength Training</option>
-                <option value="meditation">Meditation</option>
-            </select>
-        </div>
-        <div>
-            <label for="duration-input">Duration (in minutes):</label>
-            <input type="number" id="duration-input" name="duration" required>
-        </div>
-        <div>
-            <label for="calories-input">Calories Burned:</label>
-            <input type="number" id="calories-input" name="calories" required>
-        </div>
-        <button type="submit" class="btn btn-success mt-3">Submit Workout</button>
-    </form>
+    {{!-- Button to add a new workout --}}
+    <button id="add-workout-btn" class="btn btn-primary mt-3">Add New Workout</button>
+
+    {{!-- Form for adding a new workout --}}
+    <div id="workout-form" style="display:none;">
+        <form>
+            <!-- Your form fields here -->
+        </form>
+    </div>
 </div>
 
 {{!-- Script to handle the "Add New Workout" functionality, if applicable --}}

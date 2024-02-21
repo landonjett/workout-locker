@@ -1,0 +1,36 @@
+<!-- views/login.handlebars -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workout Locker</title>
+    <!-- Include any necessary stylesheets or CSS -->
+</head>
+
+<body>
+    <div class="container">
+        <h1>Login</h1>
+        <!-- Create a form for logging in -->
+        <form id="login-form" action="/login" method="POST">
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit">Login</button>
+        </form>
+        <!-- Include any additional links or elements -->
+        <p>Don't have an account? <a href="/signup">Sign up</a></p>
+    </div>
+    <!-- Include any necessary scripts -->
+</body>
+
+</html>
+
+<script src="../assets/js/login.js"></script>

@@ -9,11 +9,7 @@ router.get('/', (req, res) => {
   if (req.session.loggedIn) {
     res.redirect('/dashboard');
   } else {
-    // If using static HTML files
-    res.sendFile(path.join(__dirname, '../public/login.html'));
-    
-    // If using Handlebars
-    // res.render('home');
+  res.render('home');
   }
 });
 
@@ -22,8 +18,7 @@ router.get('/login', (req, res) => {
   if (req.session.loggedIn) {
     res.redirect('/dashboard');
   } else {
-    res.sendFile(path.join(__dirname, '../public/login.html'));
-    // Or for Handlebars: res.render('login');
+    res.render('login');
   }
 });
 
@@ -32,10 +27,17 @@ router.get('/signup', (req, res) => {
   if (req.session.loggedIn) {
     res.redirect('/dashboard');
   } else {
-    res.sendFile(path.join(__dirname, '../public/signup.html'));
-    // Or for Handlebars: res.render('signup');
+   res.render('signup');
   }
 });
+
+router.post('/signup', (req, res) => {
+  if (req.session.loggedIn) {
+    res.redirect('/dashboard');
+  } else {
+    res.render('signup');
+  }
+}); 
 
 // Serve the dashboard page - protected by isAuthenticated middleware
 router.get('/dashboard', isAuthenticated, (req, res) => {
