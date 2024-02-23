@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function to toggle the workout form visibility
     function toggleWorkoutForm() {
+        const workoutForm = document.getElementById('workout-form');
         if (workoutForm.style.display === 'none' || !workoutForm.style.display) {
             workoutForm.style.display = 'block';
         } else {

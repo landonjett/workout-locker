@@ -57,25 +57,25 @@ router.post('/users/logout', (req, res) => {
   }
 });
 
-// Updated Route for adding a workout to include the 'name' field
-router.post('/workouts', async (req, res) => {
+// Route for adding a workout
+router.post('/workouts/add', async (req, res) => {
   try {
-    const { name, type, duration, calories } = req.body; // Include 'name' in the destructuring
-    const userId = req.session.userId; // Extract userId from the session
+    const { name, type, duration, caloriesBurned } = req.body;
+    const userId = req.session.userId;
 
     if (!userId) {
       return res.status(403).json({ error: 'User not logged in' });
     }
 
-    if (!name || !type || !duration || isNaN(calories)) { // Check for 'name' as well
+    if (!name || !type || !duration || isNaN(caloriesBurned)) {
       return res.status(400).json({ error: 'All fields are required, including the workout name.' });
     }
 
     const newWorkout = await Workout.create({
-      name, // Save the 'name' along with other workout details
+      name,
       type,
       duration,
-      caloriesBurned: calories,
+      caloriesBurned,
       userId,
     });
 
@@ -86,15 +86,25 @@ router.post('/workouts', async (req, res) => {
   }
 });
 
-// Route for fetching all workouts
-router.get('/workouts', async (req, res) => {
+// Route for fetching workouts for the logged-in user
+router.get('/workouts/user', async (req, res) => {
   try {
-    const workouts = await Workout.findAll();
-    res.json(workouts);
+    const userId = req.session.userId;
+    if (!userId) {
+      return res.status(403).json({ error: 'User not logged in' });
+    }
+
+    const userWorkouts = await Workout.findAll({
+      where: { userId }
+    });
+
+    res.json(userWorkouts);
   } catch (error) {
-    console.error('Error fetching workouts:', error);
+    console.error('Error fetching user workouts:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+
 
 module.exports = router;

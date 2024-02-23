@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function fetchWorkouts() {
+    console.log ("fetchWorkouts")
     fetch('/api/workouts/user', { // Ensure this endpoint is correct and returns workout data including the 'name' attribute
         method: 'GET',
         headers: {
