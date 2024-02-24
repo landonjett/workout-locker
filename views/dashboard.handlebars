@@ -1,131 +1,273 @@
-{{!-- Include main layout --}}
-{{!-- {{> main}} --}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Dashboard</title>
+    <!-- Include Swiper CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+    <!-- Include any necessary stylesheets or CSS -->
 
-{{!-- Main content --}}
-<div class="container">
-    <h1 class="mt-4 mb-4">Your Dashboard</h1>
+    <style>
+        /* Add any custom styles here */
 
-    {{!-- Optional: Display the user's name or username if available --}}
-    {{#if user.username}}
-        <h2>Welcome back, {{user.username}}!</h2>
-    {{/if}}
+        .container {
+            max-width: 800px; /* Adjust the maximum width of the container */
+            margin: 0 auto;
+            padding: 20px;
+            position: relative; /* Add position relative */
+        }
 
-    {{!-- Section for displaying workout details --}}
-    <div id="workouts-container">
-        {{!-- Container for dynamically loaded workouts --}}
-        {{#each workouts}}
-            <div class="workout-card">
-                <h3>{{this.name}}</h3>
-                <p>Workout Type: {{this.type}}</p>
-                <p>Duration: {{this.duration}} minutes</p>
-                <p>Calories Burned: {{this.caloriesBurned}}</p>
+        .swiper-container {
+            overflow: hidden;
+        }
+
+        .swiper-wrapper {
+            display: flex;
+        }
+
+        .workout-card {
+            flex: 0 0 calc(50% - 20px); /* Set the width of each workout card to 50% minus the gap */
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease;
+            margin-right: 20px; /* Adjust the gap between workout cards */
+        }
+
+        .workout-card:last-child {
+            margin-right: 0; /* Remove right margin from the last workout card */
+        }
+
+        .workout-card:hover {
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .workout-content {
+            margin-bottom: 10px;
+        }
+
+        .workout-content h3 {
+            margin-bottom: 5px;
+        }
+
+        .delete-btn {
+            visibility: hidden;
+            margin-top: 10px;
+        }
+
+        .workout-card:hover .delete-btn {
+            visibility: visible;
+        }
+
+        .swiper-button-prev, .swiper-button-next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 30px;
+            height: 30px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            z-index: 10; /* Ensure the buttons appear above the cards */
+        }
+
+        .swiper-button-prev:hover, .swiper-button-next:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .swiper-button-prev {
+            left: -35px; /* Adjust the position */
+        }
+
+        .swiper-button-next {
+            right: -35px; /* Adjust the position */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-4 mb-4">Your Dashboard</h1>
+
+        {{!-- Optional: Display the user's name or username if available --}}
+        {{#if user.username}}
+            <h2>Welcome back, {{user.username}}!</h2>
+        {{/if}}
+
+        {{!-- Section for displaying workout details --}}
+        <div class="swiper-container">
+            <div class="swiper-wrapper" id="workouts-container">
+                <!-- Workouts will be dynamically loaded here -->
             </div>
-        {{/each}}
+        </div>
+
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+
+        {{!-- Button to toggle the display of the new workout form --}}
+        <button id="toggle-workout-form" class="btn btn-primary mt-3">Add New Workout</button>
+
+        {{!-- Form for adding a new workout with dynamic inputs based on workout type --}}
+        <div id="workout-form" style="display:none;">
+            <form id="add-workout-form">
+                <div class="form-group">
+                    <label for="workout-name">Workout Name:</label>
+                    <input type="text" class="form-control" id="workout-name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="workout-type">Workout Type:</label>
+                    <select class="form-control" id="workout-type" name="type" required onchange="changeWorkoutType()">
+                        <option value="Cardio">Cardio</option>
+                        <option value="Strength Training">Strength Training</option>
+                    </select>
+                </div>
+                <!-- Dynamic inputs will be inserted here -->
+                <div id="dynamic-inputs"></div>
+                <button type="submit" class="btn btn-primary mt-3">Add Workout</button>
+            </form>
+        </div>
     </div>
 
-    {{!-- Button to toggle the display of the new workout form --}}
-    <button id="toggle-workout-form" class="btn btn-primary mt-3">Add New Workout</button>
+    <!-- Include Swiper JS library -->
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <!-- Include any necessary scripts -->
 
-    {{!-- Form for adding a new workout --}}
-    <div id="workout-form" style="display:none;">
-        <form id="add-workout-form">
-            <div class="form-group">
-                <label for="workout-name">Workout Name:</label>
-                <input type="text" class="form-control" id="workout-name" name="workout-name" required>
-            </div>
-            <div class="form-group">
-                <label for="workout-type">Workout Type:</label>
-                <input type="text" class="form-control" id="workout-type" name="workout-type" required>
-            </div>
-            <div class="form-group">
-                <label for="workout-duration">Duration (minutes):</label>
-                <input type="number" class="form-control" id="workout-duration" name="workout-duration" required>
-            </div>
-            <div class="form-group">
-                <label for="calories-burned">Calories Burned:</label>
-                <input type="number" class="form-control" id="calories-burned" name="calories-burned" required>
-            </div>
-            <button type="submit" class="btn btn-primary mt-3">Add Workout</button>
-        </form>
-    </div>
-</div>
+    <script>
+        let workoutForm;
 
-{{!-- Script to handle the toggling of the workout form --}}
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const toggleWorkoutFormBtn = document.getElementById('toggle-workout-form');
-        const workoutForm = document.getElementById('workout-form');
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleWorkoutFormBtn = document.getElementById('toggle-workout-form');
+            workoutForm = document.getElementById('workout-form');
 
-        toggleWorkoutFormBtn.addEventListener('click', function() {
-            if (workoutForm.style.display === 'none' || workoutForm.style.display === '') {
-                workoutForm.style.display = 'block';
-            } else {
-                workoutForm.style.display = 'none';
+            toggleWorkoutFormBtn.addEventListener('click', function() {
+                workoutForm.style.display = workoutForm.style.display === 'none' ? 'block' : 'none';
+            });
+
+            changeWorkoutType();
+            fetchWorkouts(); // Fetch and display workouts when the page loads
+
+            // Initialize Swiper
+            const swiper = new Swiper('.swiper-container', {
+                direction: 'horizontal',
+                loop: true,
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+                slidesPerView: 2, // Display only 2 slides at a time
+                spaceBetween: 20, // Add some space between slides
+            });
+        });
+
+        function changeWorkoutType() {
+            const workoutType = document.getElementById('workout-type').value;
+            const dynamicInputs = document.getElementById('dynamic-inputs');
+            dynamicInputs.innerHTML = '';
+
+            if (workoutType === 'Cardio') {
+                dynamicInputs.innerHTML = `
+                    <div class="form-group">
+                        <label for="workout-duration">Duration (minutes):</label>
+                        <input type="number" class="form-control" id="workout-duration" name="duration" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="calories-burned">Calories Burned:</label>
+                        <input type="number" class="form-control" id="calories-burned" name="caloriesBurned" required>
+                    </div>
+                `;
+            } else if (workoutType === 'Strength Training') {
+                dynamicInputs.innerHTML = `
+                    <div class="form-group">
+                        <label for="sets">Sets:</label>
+                        <input type="number" class="form-control" id="sets" name="sets" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reps">Reps:</label>
+                        <input type="number" class="form-control" id="reps" name="reps" required>
+                    </div>
+                `;
+            }
+        }
+
+        document.getElementById('add-workout-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const workoutData = Object.fromEntries(formData.entries());
+
+            try {
+                const response = await fetch('/api/workouts/add', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(workoutData)
+                });
+                if (response.ok) {
+                    event.target.reset();
+                    workoutForm.style.display = 'none';
+                    fetchWorkouts(); // Fetch and display updated workouts
+                } else {
+                    console.error('Error adding workout:', await response.text());
+                }
+            } catch (error) {
+                console.error('Error adding workout:', error);
             }
         });
-    });
-</script>
 
-<script>
-    // JavaScript code to fetch and display workouts
-    async function fetchAndDisplayWorkouts() {
-        try {
-            const response = await fetch('/api/workouts');
-            const workouts = await response.json();
-            const workoutsContainer = document.getElementById('workouts-container');
-            workoutsContainer.innerHTML = ''; // Clear existing workouts
-            workouts.forEach(workout => {
-                const workoutElement = document.createElement('div');
-                workoutElement.classList.add('workout-card');
-                workoutElement.innerHTML = `
-                    <h3>${workout.name}</h3>
-                    <p>Workout Type: ${workout.type}</p>
-                    <p>Duration: ${workout.duration} minutes</p>
-                    <p>Calories Burned: ${workout.caloriesBurned}</p>
-                `;
-                workoutsContainer.appendChild(workoutElement);
-            });
-        } catch (error) {
-            console.error('Error fetching workouts:', error);
+        function fetchWorkouts() {
+            fetch('/api/workouts/user', {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            })
+            .then(response => response.json())
+            .then(workouts => {
+                const workoutsContainer = document.querySelector('#workouts-container');
+                workoutsContainer.innerHTML = '';
+
+                workouts.forEach(workout => {
+                    const workoutElement = document.createElement('div');
+                    workoutElement.classList.add('workout-card', 'swiper-slide'); // Add swiper-slide class
+                    workoutElement.innerHTML = `
+                        <div class="workout-content">
+                            <h3>${workout.name}</h3>
+                            <p>Workout Type: ${workout.type}</p>
+                            ${workout.duration ? `<p>Duration: ${workout.duration} minutes</p>` : ''}
+                            ${workout.caloriesBurned ? `<p>Calories Burned: ${workout.caloriesBurned}</p>` : ''}
+                            ${workout.sets ? `<p>Sets: ${workout.sets}</p>` : ''}
+                            ${workout.reps ? `<p>Reps: ${workout.reps}</p>` : ''}
+                        </div>
+                        <button onclick="deleteWorkout(${workout.id})" class="btn btn-danger delete-btn" style="visibility: hidden;">Delete</button> <!-- Delete button -->
+                    `;
+                    workoutElement.addEventListener('mouseenter', function() {
+                        const deleteBtn = workoutElement.querySelector('.delete-btn');
+                        deleteBtn.style.visibility = 'visible';
+                    });
+                    workoutElement.addEventListener('mouseleave', function() {
+                        const deleteBtn = workoutElement.querySelector('.delete-btn');
+                        deleteBtn.style.visibility = 'hidden';
+                    });
+                    workoutsContainer.appendChild(workoutElement);
+                });
+            })
+            .catch(error => console.error('Error fetching workouts:', error));
         }
-    }
 
-    document.addEventListener('DOMContentLoaded', fetchAndDisplayWorkouts);
-
-    // JavaScript code to handle form submission for adding a workout
-    document.getElementById('add-workout-form').addEventListener('submit', async function(event) {
-        event.preventDefault(); // Prevent the default form submission
-
-        const workoutData = {
-            name: document.getElementById('workout-name').value,
-            type: document.getElementById('workout-type').value,
-            duration: document.getElementById('workout-duration').value,
-            caloriesBurned: document.getElementById('calories-burned').value
-        };
-
-        try {
-            const response = await fetch('/api/workouts/add', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(workoutData)
-            });
-            if (response.ok) {
-                // Refresh the list of workouts if the workout was added successfully
-                fetchAndDisplayWorkouts();
-                // Clear the form fields
-                document.getElementById('workout-name').value = '';
-                document.getElementById('workout-type').value = '';
-                document.getElementById('workout-duration').value = '';
-                document.getElementById('calories-burned').value = '';
-                // Hide the form
-                document.getElementById('workout-form').style.display = 'none';
-            } else {
-                console.error('Error adding workout:', response.statusText);
+        async function deleteWorkout(workoutId) {
+            try {
+                const response = await fetch(`/api/workouts/delete/${workoutId}`, {
+                    method: 'DELETE'
+                });
+                if (response.ok) {
+                    fetchWorkouts(); // Fetch and display updated workouts
+                } else {
+                    console.error('Error deleting workout:', await response.text());
+                }
+            } catch (error) {
+                console.error('Error deleting workout:', error);
             }
-        } catch (error) {
-            console.error('Error adding workout:', error);
         }
-    });
-</script>
+    </script>
+</body>
+</html>

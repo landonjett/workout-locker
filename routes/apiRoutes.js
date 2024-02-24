@@ -57,28 +57,45 @@ router.post('/users/logout', (req, res) => {
   }
 });
 
-// Route for adding a workout
+// Route for adding a workout with conditional logic for workout type
 router.post('/workouts/add', async (req, res) => {
   try {
-    const { name, type, duration, caloriesBurned } = req.body;
+    const { name, type, duration, caloriesBurned, sets, reps } = req.body;
     const userId = req.session.userId;
 
     if (!userId) {
       return res.status(403).json({ error: 'User not logged in' });
     }
 
-    if (!name || !type || !duration || isNaN(caloriesBurned)) {
-      return res.status(400).json({ error: 'All fields are required, including the workout name.' });
+    // Validate mandatory fields
+    if (!name || !type) {
+      return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    const newWorkout = await Workout.create({
-      name,
-      type,
-      duration,
-      caloriesBurned,
-      userId,
-    });
+    // Initialize workoutData with fields applicable to all types
+    let workoutData = { name, userId, type: type.toLowerCase() };
 
+    // Append conditional fields based on workout type
+    switch (workoutData.type) {
+      case 'cardio':
+        if (!duration || !caloriesBurned) {
+          return res.status(400).json({ error: 'Missing required fields for cardio workout' });
+        }
+        workoutData.duration = duration;
+        workoutData.caloriesBurned = caloriesBurned;
+        break;
+      case 'strength training':
+        if (!sets || !reps) {
+          return res.status(400).json({ error: 'Missing required fields for strength training workout' });
+        }
+        workoutData.sets = sets;
+        workoutData.reps = reps;
+        break;
+      default:
+        return res.status(400).json({ error: 'Invalid workout type' });
+    }
+
+    const newWorkout = await Workout.create(workoutData);
     res.status(201).json(newWorkout);
   } catch (error) {
     console.error('Error adding workout:', error);
@@ -95,7 +112,8 @@ router.get('/workouts/user', async (req, res) => {
     }
 
     const userWorkouts = await Workout.findAll({
-      where: { userId }
+      where: { userId },
+      order: [['createdAt', 'DESC']]
     });
 
     res.json(userWorkouts);
@@ -105,6 +123,30 @@ router.get('/workouts/user', async (req, res) => {
   }
 });
 
+// Route for deleting a workout
+router.delete('/workouts/delete/:id', async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    const workoutId = req.params.id;
 
+    if (!userId) {
+      return res.status(403).json({ error: 'User not logged in' });
+    }
+
+    // Check if the workout belongs to the logged-in user
+    const workout = await Workout.findOne({ where: { id: workoutId, userId } });
+    if (!workout) {
+      return res.status(404).json({ error: 'Workout not found' });
+    }
+
+    // Delete the workout
+    await workout.destroy();
+
+    res.status(204).end(); // No content response upon successful deletion
+  } catch (error) {
+    console.error('Error deleting workout:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 module.exports = router;
