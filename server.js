@@ -2,24 +2,17 @@ const express = require('express');
 const session = require('express-session');
 const exphbs = require('express-handlebars');
 const path = require('path');
-const router = express.Router();
-
 const sequelize = require('./config/connection');
-// const SequelizeStore = require('connect-session-sequelize')(session.Store);
-
 const app = express();
 const PORT = process.env.PORT || 3001;
 
 const hbs = exphbs.create({ });
 
-// Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
+// Session middleware
 const sess = {
   secret: 'Super secret secret',
   cookie: {
-   secure: false 
+    secure: false 
   },
   resave: false,
   saveUninitialized: true,
@@ -27,8 +20,7 @@ const sess = {
   //   db: sequelize
   // })
 };
-
-app.use(session(sess));// Session middleware
+app.use(session(sess));
 
 // Handlebars setup
 app.engine('handlebars', hbs.engine);
@@ -38,19 +30,22 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(router);
-
 // API routes
-const apiRoutes = require('./routes/apiroutes');
+const apiRoutes = require('./routes/apiRoutes');
 app.use('/api', apiRoutes);
 
 // View routes
-const viewRoutes = require('./routes/viewroutes');
+const viewRoutes = require('./routes/viewRoutes');
 app.use('/', viewRoutes);
 
-// Start server
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something went wrong!');
+});
+
 sequelize.sync({ force: false }).then(() => {
   app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-module.exports = router;
 });
+
+module.exports = app;

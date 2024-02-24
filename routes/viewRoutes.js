@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const path = require('path');
-// Assuming you have a middleware to check if the user is logged in
 const isAuthenticated = require('../config/middleware/isAuthenticated');
 
 // Serve the homepage
@@ -9,11 +8,11 @@ router.get('/', (req, res) => {
   if (req.session.loggedIn) {
     res.redirect('/dashboard');
   } else {
-  res.render('home');
+    res.render('home');
   }
 });
 
-// Serve the login page - might be redundant if '/' covers login
+// Serve the login page
 router.get('/login', (req, res) => {
   if (req.session.loggedIn) {
     res.redirect('/dashboard');
@@ -27,22 +26,30 @@ router.get('/signup', (req, res) => {
   if (req.session.loggedIn) {
     res.redirect('/dashboard');
   } else {
-   res.render('signup');
+    res.render('signup');
   }
 });
 
+// Handle user signup
 router.post('/signup', (req, res) => {
-  if (req.session.loggedIn) {
-    res.redirect('/dashboard');
-  } else {
-    res.render('signup');
-  }
-}); 
+  // Logic for user signup
+});
 
-// Serve the dashboard page - protected by isAuthenticated middleware
+// Serve the dashboard page
 router.get('/dashboard', isAuthenticated, (req, res) => {
-  // res.sendFile(path.join(__dirname, '../public/dashboard.html')); // For static files
-  res.render('dashboard', { user: req.session.user }); // Assuming you're passing the user session info to the template
+  res.render('dashboard', { user: req.session.user });
+});
+
+// Handle user logout
+router.get('/logout', (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('Error destroying session:', err);
+      res.status(500).send('Logout failed');
+    } else {
+      res.redirect('/'); // Redirect to the homepage after logout
+    }
+  });
 });
 
 module.exports = router;

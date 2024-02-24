@@ -1,10 +1,13 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Fetch and display workouts when the page is fully loaded
     fetchWorkouts();
+
+    // Add event listener for form submission
+    document.querySelector('#add-workout-form').addEventListener('submit', handleAddWorkout);
 });
 
 function fetchWorkouts() {
-    fetch('/api/workouts/user', { // Ensure this endpoint is correct and returns workout data including the 'name' attribute
+    fetch('/api/workouts/user', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -19,10 +22,12 @@ function fetchWorkouts() {
             const workoutElement = document.createElement('div');
             workoutElement.classList.add('workout-card');
             workoutElement.innerHTML = `
-                <h3>${workout.name}</h3> <!-- Display the workout name here -->
+                <h3>${workout.name}</h3>
                 <p>Workout Type: ${workout.type}</p>
-                <p>Duration: ${workout.duration} minutes</p>
-                <p>Calories Burned: ${workout.caloriesBurned}</p>
+                ${workout.duration ? `<p>Duration: ${workout.duration} minutes</p>` : ''}
+                ${workout.caloriesBurned ? `<p>Calories Burned: ${workout.caloriesBurned}</p>` : ''}
+                ${workout.sets ? `<p>Sets: ${workout.sets}</p>` : ''}
+                ${workout.reps ? `<p>Reps: ${workout.reps}</p>` : ''}
             `;
             workoutsContainer.appendChild(workoutElement);
         });
@@ -30,16 +35,23 @@ function fetchWorkouts() {
     .catch(error => console.error('Error fetching workouts:', error));
 }
 
-
-// Example form submission for adding a workout
-document.querySelector('#add-workout-form').addEventListener('submit', function(event) {
+function handleAddWorkout(event) {
     event.preventDefault(); // Prevent the default form submission
 
-    const workoutData = {
-        type: document.querySelector('#workout-type').value,
-        duration: document.querySelector('#workout-duration').value,
-        caloriesBurned: document.querySelector('#workout-calories').value,
+    const type = document.querySelector('#workout-type').value;
+    let workoutData = {
+        name: document.querySelector('#workout-name').value,
+        type: type,
     };
+
+    // Include conditional fields based on workout type
+    if (type === 'Cardio') {
+        workoutData.duration = document.querySelector('#workout-duration').value;
+        workoutData.caloriesBurned = document.querySelector('#workout-calories').value;
+    } else if (type === 'Strength Training') {
+        workoutData.sets = document.querySelector('#workout-sets').value;
+        workoutData.reps = document.querySelector('#workout-reps').value;
+    }
 
     fetch('/api/workouts/add', {
         method: 'POST',
@@ -48,7 +60,13 @@ document.querySelector('#add-workout-form').addEventListener('submit', function(
         },
         body: JSON.stringify(workoutData),
     })
-    .then(response => response.json())
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        } else {
+            throw new Error('Failed to add workout');
+        }
+    })
     .then(data => {
         console.log('Success:', data);
         fetchWorkouts(); // Refresh the list of workouts
@@ -56,4 +74,4 @@ document.querySelector('#add-workout-form').addEventListener('submit', function(
     .catch((error) => {
         console.error('Error:', error);
     });
-});
+}
