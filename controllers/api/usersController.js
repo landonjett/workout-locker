@@ -61,6 +61,7 @@ router.post('/login', async (req, res) => {
 // Route for user logout
 router.post('/logout', (req, res) => {
   if (req.session.loggedIn) {
+    req.session.loggedIn = false; // Update loggedIn to false upon logout
     req.session.destroy(() => {
       res.status(204).end(); // No content response upon successful logout
     });

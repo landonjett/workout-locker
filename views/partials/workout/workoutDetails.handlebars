@@ -1,7 +1,17 @@
 <div class="workout-card card mb-3">
   <div class="card-body">
     <h5 class="card-title">{{type}}</h5>
-    <p class="card-text">Duration: {{duration}} minutes</p>
-    <p class="card-text">Calories Burned: {{caloriesBurned}}</p>
+    {{#if duration}}
+      <p class="card-text">Duration: {{duration}} minutes</p>
+    {{/if}}
+    {{#if caloriesBurned}}
+      <p class="card-text">Calories Burned: {{caloriesBurned}}</p>
+    {{/if}}
+    {{#if sets}}
+      <p class="card-text">Sets: {{sets}}</p>
+    {{/if}}
+    {{#if reps}}
+      <p class="card-text">Reps: {{reps}}</p>
+    {{/if}}
   </div>
 </div>

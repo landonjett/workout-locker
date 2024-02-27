@@ -5,34 +5,51 @@ class Workout extends Model {}
 
 Workout.init({
   // Model attributes are defined here
-  name: { // Add this field to match the new column in your database
+  id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    primaryKey: true,
+    autoIncrement: true,
+  },
+  name: {
     type: DataTypes.STRING,
     allowNull: false,
   },
   type: {
-    type: DataTypes.STRING,
+    type: DataTypes.ENUM('cardio', 'strength training', 'meditation'),
     allowNull: false,
   },
+  // Make duration and caloriesBurned nullable for flexibility
   duration: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: true, // Changed to true to accommodate different workout types
   },
   caloriesBurned: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: true, // Changed to true
+  },
+  // Add sets and reps for strength training workouts
+  sets: {
+    type: DataTypes.INTEGER,
+    allowNull: true, // These can be null for non-strength training workouts
+  },
+  reps: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
   },
   userId: {
     type: DataTypes.INTEGER,
     references: {
-      model: 'users', // Ensure this matches the table name in your database, which is typically plural
+      model: 'users',
       key: 'id',
     },
+    allowNull: false,
   },
 }, {
   sequelize,
-  modelName: 'Workout', // Ensure this is capitalized to match convention and is singular
-  freezeTableName: true, // Prevents Sequelize from pluralizing the table name
-  tableName: 'workouts', // Explicitly specify the table name to match your database
+  modelName: 'Workout',
+  freezeTableName: true,
+  tableName: 'workouts',
   timestamps: true,
   underscored: true,
 });

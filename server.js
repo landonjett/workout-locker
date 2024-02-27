@@ -2,39 +2,50 @@ const express = require('express');
 const session = require('express-session');
 const exphbs = require('express-handlebars');
 const path = require('path');
-
+const sequelize = require('./config/connection');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+const hbs = exphbs.create({ });
 
 // Session middleware
-app.use(session({
-  secret: 'supersecret',
+const sess = {
+  secret: 'Super secret secret',
+  cookie: {
+    secure: false 
+  },
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: false },
-}));
+  // store: new SequelizeStore({
+  //   db: sequelize
+  // })
+};
+app.use(session(sess));
 
 // Handlebars setup
-app.engine('handlebars', exphbs.engine({ defaultLayout: 'main' }));
+app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // API routes
-const apiRoutes = require('./routes/apiroutes');
+const apiRoutes = require('./routes/apiRoutes');
 app.use('/api', apiRoutes);
 
 // View routes
-const viewRoutes = require('./routes/viewroutes');
+const viewRoutes = require('./routes/viewRoutes');
 app.use('/', viewRoutes);
 
-// Serve static files (like CSS, images)
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Start server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something went wrong!');
 });
+
+sequelize.sync({ force: false }).then(() => {
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+});
+
+module.exports = app;

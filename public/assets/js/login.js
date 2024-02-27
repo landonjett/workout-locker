@@ -5,8 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
     event.preventDefault(); // Prevent the default form submission behavior
 
     // Capture the email and password from the form
-    const email = document.querySelector('#email-input').value.trim();
-    const password = document.querySelector('#password-input').value.trim();
+    const email = document.querySelector('#email').value.trim();
+    const password = document.querySelector('#password').value.trim();
 
     if (email && password) {
       // Send a POST request to the server with the email and password
